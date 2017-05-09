@@ -1,8 +1,6 @@
 package com.paner.kafka;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -30,7 +28,13 @@ public class ProducerDemo {
 
         Producer<String,String> producer = new KafkaProducer<String, String>(props);
         for (int i=0;i<events;i++){
-            producer.send(new ProducerRecord<String, String>("topic_0508",String.valueOf(i),String.valueOf(rnd.nextInt())));
+            //回调处理错误信息
+            producer.send(new ProducerRecord<String, String>("topic_0508", String.valueOf(i), String.valueOf(rnd.nextInt()))
+                    , new Callback() {
+                public void onCompletion(RecordMetadata metadata, Exception exception) {
+                    System.out.println(exception.getMessage());
+                }
+            });
             Thread.sleep(500);
         }
         producer.close();
