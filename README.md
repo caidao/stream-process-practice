@@ -28,5 +28,7 @@
 ##### 常用命令汇总
 + 查看topic消费情况
 `bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --group test  --topic topic_0508  --zookeeper localhost:2181`
++ 更改topic分区情况
+`bin/kafka-topics.sh --zookeeper localhost:2181 --alter --partitions 20 --topic topic_0508`
     
 
