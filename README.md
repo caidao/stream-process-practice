@@ -26,9 +26,19 @@
     + 为保证消息一定能处理且仅处理一次,需要consumer做额外的保证工作（两阶段提交或TCC[提交事务](http://www.roncoo.com/article/detail/124243)）
     
 ##### 常用命令汇总
++ 创建topic
+`bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 3 --topic topic_0511`
++ 查看topic列表
+`bin/kafka-topics.sh --list  --zookeeper localhost:2181`
++ 查看某个topic的信息
+`bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic topic_0511`
++ 验证消息生产成功
+`bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic test --time -1`
 + 查看topic消费情况
-`bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --group test  --topic topic_0508  --zookeeper localhost:2181`
+0.9之前：`bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --group test  --topic topic_0508  --zookeeper localhost:2181`
+0.9之后版本：`bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 -describe  --new-consumer -group test` 消费组在运行状态中
 + 更改topic分区情况
 `bin/kafka-topics.sh --zookeeper localhost:2181 --alter --partitions 20 --topic topic_0508`
++ [查看__consumer_offsets中的信息](http://www.cnblogs.com/huxi2b/p/6061110.html)
     
 
