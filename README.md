@@ -40,5 +40,11 @@
 + 更改topic分区情况
 `bin/kafka-topics.sh --zookeeper localhost:2181 --alter --partitions 20 --topic topic_0508`
 + [查看__consumer_offsets中的信息](http://www.cnblogs.com/huxi2b/p/6061110.html)
++ [消费组相关解析](http://www.cnblogs.com/huxi2b/p/6223228.html)
++ 查询`__consumer_offsets` topic所有内容
+`bin/kafka-console-consumer.sh --topic __consumer_offsets --zookeeper localhost:2181 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter" --consumer.config config/consumer.properties --from-beginning`
++ 获取指定consumer group的位移信息
+`bin/kafka-simple-consumer-shell.sh --topic __consumer_offsets --partition 11 --broker-list localhost:9092 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter"`
+
     
 
