@@ -56,17 +56,17 @@ public class FetchingConsumerOffsets {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         KafkaConsumer<String,Object> consumer = new KafkaConsumer<String,Object>(props);
-        //consumer.subscribe(Arrays.asList("__consumer_offsets"));
-        TopicPartition partitions = new TopicPartition("__consumer_offsets", 10);
-        consumer.assign(Arrays.asList(partitions));
+        consumer.subscribe(Arrays.asList("__consumer_offsets"));
+//        TopicPartition partitions = new TopicPartition("__consumer_offsets", 10);
+//        consumer.assign(Arrays.asList(partitions));
         while (true){
             ConsumerRecords<String, Object> records = consumer.poll(100);
             for(TopicPartition partition : records.partitions()){
-                List<ConsumerRecord<String,Object>> partitionRecords = records.records(partition);
-                for (ConsumerRecord<String,Object> record:partitionRecords){
-                    System.out.printf(Thread.currentThread().getName()+",partition =%d,offset = %d, key = %s, value = %s \n",record.partition(), record.offset(), record.key(), record.value());
-                }
+            List<ConsumerRecord<String,Object>> partitionRecords = records.records(partition);
+            for (ConsumerRecord<String,Object> record:partitionRecords){
+                System.out.printf(Thread.currentThread().getName()+",partition =%d,offset = %d, key = %s, value = %s \n",record.partition(), record.offset(), record.key(), record.value());
             }
+        }
 
         }
     }

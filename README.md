@@ -46,5 +46,7 @@
 + 获取指定consumer group的位移信息
 `bin/kafka-simple-consumer-shell.sh --topic __consumer_offsets --partition 11 --broker-list localhost:9092 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter"`
 
+##### 通讯协议总结
+ [详情](http://colobu.com/2017/01/26/A-Guide-To-The-Kafka-Protocol/)
     
 
