@@ -33,7 +33,7 @@
 + 查看某个topic的信息
 `bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic topic_0511`
 + 验证消息生产成功
-`bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic test --time -1`
+`bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --topic topic_0511_2 --time -1`
 + 查看topic消费情况
 0.9之前：`bin/kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --group test  --topic topic_0508  --zookeeper localhost:2181`
 0.9之后版本：`bin/kafka-consumer-groups.sh --bootstrap-server localhost:9092 -describe  --new-consumer -group test` 消费组在运行状态中
@@ -48,5 +48,14 @@
 
 ##### 通讯协议总结
  [详情](http://colobu.com/2017/01/26/A-Guide-To-The-Kafka-Protocol/)
+ 
++ 元数据接口(Metadata api)
+    + TopicMetadataRequest
+    + TopicMetadataResponse
     
++ 生产接口(Produce API)
+
++ 获取消息接口（Fetch API）
+用于获取一些Topic分区的一个或多个的日志块。
+    + 
 

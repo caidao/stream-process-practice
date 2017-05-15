@@ -1,10 +1,12 @@
 package com.paner.kafka;
 
 import kafka.api.FetchRequest;
+import kafka.api.TopicMetadataResponse;
 import kafka.common.OffsetAndMetadata;
 import kafka.common.TopicAndPartition;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.OffsetCommitRequest;
+import kafka.javaapi.TopicMetadataRequest;
 import kafka.network.BlockingChannel;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -21,7 +23,8 @@ public class FetchingConsumerOffsets {
 
     private BlockingChannel channel;
 
-    private void init(){
+    @Test
+    public void init(){
         try {
             BlockingChannel channel = new BlockingChannel("localhost", 9092,
                     BlockingChannel.UseDefaultBufferSize(),
@@ -33,8 +36,10 @@ public class FetchingConsumerOffsets {
             int correlationId = 0;
             final TopicAndPartition testPartition0 = new TopicAndPartition("demoTopic", 0);
             final TopicAndPartition testPartition1 = new TopicAndPartition("demoTopic", 1);
-
-
+            TopicMetadataRequest request = new TopicMetadataRequest(Arrays.asList("topic_0511_2"));
+            channel.send(request);
+            TopicMetadataResponse response = TopicMetadataResponse.readFrom(channel.receive().payload());
+            System.out.println("TopicMetadataResponse:"+response.describe(true));
         }catch (Exception ex){
 
         }
