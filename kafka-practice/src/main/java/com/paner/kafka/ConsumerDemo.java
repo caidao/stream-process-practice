@@ -28,7 +28,7 @@ public class ConsumerDemo {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         new ConsumerThread(props).start();
-        new ConsumerThread(props).start();
+       // new ConsumerThread(props).start();
         while (true);
 
     }

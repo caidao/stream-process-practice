@@ -54,8 +54,20 @@
     + TopicMetadataResponse
     
 + 生产接口(Produce API)
+    + ProducerRequest
+    + ProducerResponse
 
 + 获取消息接口（Fetch API）
 用于获取一些Topic分区的一个或多个的日志块。
-    + 
+    + FetchRequest
+    + FetchResponse
+
++ 提交offset的方式
+    + OffsetCommitRequest
+    + OffsetCommitResponse
+
++ 获取offset的方式
+    + OffsetFetchRequest
+    + OffsetFetchResponse
+
 
