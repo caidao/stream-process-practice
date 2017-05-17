@@ -4,6 +4,7 @@
 + [zookeeper安装配置](http://www.jianshu.com/p/0ba61bf7149f)
 + [kafka安装配置](http://nekomiao.me/2016/11/20/kafka/)
 + jar包的版本要跟kafka版本匹配
++ [kafka中文教程](http://www.orchome.com/kafka/index)
 
 ##### Q&A
 + Q:producer消息丢失处理？
@@ -20,10 +21,12 @@
 + A:producer分区数，它实际上是用多个线程并发地向不同分区所在的broker发起Socket连接同时给这些分区发送消息。分区数越多，内存和线程所消耗的资源就越多，所需要打开状态的文件句柄就越多，降低可用性
 
 + Q:consumer消息丢失处理？
-+ A:首先要了解[消息传输](http://matt33.com/2016/03/09/kafka-transmit/)，主要分散中情况：
++ A:首先要了解[消息传输](http://matt33.com/2016/03/09/kafka-transmit/)，主要分这几种情况：
     + commit后处理消息，消息会丢失
     + commit前处理消息，消息可能会重复
     + 为保证消息一定能处理且仅处理一次,需要consumer做额外的保证工作（两阶段提交或TCC[提交事务](http://www.roncoo.com/article/detail/124243)）
+    
+
     
 ##### 常用命令汇总
 + 创建topic
@@ -47,7 +50,7 @@
 `bin/kafka-simple-consumer-shell.sh --topic __consumer_offsets --partition 11 --broker-list localhost:9092 --formatter "kafka.coordinator.GroupMetadataManager\$OffsetsMessageFormatter"`
 
 ##### 通讯协议总结
- [详情](http://colobu.com/2017/01/26/A-Guide-To-The-Kafka-Protocol/)
+ [协议详情](http://colobu.com/2017/01/26/A-Guide-To-The-Kafka-Protocol/)
  
 + 元数据接口(Metadata api)
     + TopicMetadataRequest
