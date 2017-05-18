@@ -40,7 +40,7 @@ public class ConsumerDemo {
 
         public ConsumerThread(Properties props){
             consumer = new KafkaConsumer<String,Object>(props);
-            consumer.subscribe(Arrays.asList("topic_0511_2"));
+            consumer.subscribe(Arrays.asList("streams-wordcount-output"));
         }
 
         public void run(){
