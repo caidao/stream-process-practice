@@ -22,7 +22,7 @@ public class ConsumerDemo {
         Properties props = new Properties();
         props.put("bootstrap.servers","localhost:9092");
         props.put("enable.auto.commit", "true");
-        props.put("group.id", "group_paner");
+        props.put("group.id", "paner_cs");
         props.put("auto.commit.interval.ms", "1000");
         props.put("session.timeout.ms", "30000");
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -40,7 +40,7 @@ public class ConsumerDemo {
 
         public ConsumerThread(Properties props){
             consumer = new KafkaConsumer<String,Object>(props);
-            consumer.subscribe(Arrays.asList("streams-wordcount-output"));
+            consumer.subscribe(Arrays.asList("streams-file-input"));
         }
 
         public void run(){

@@ -29,7 +29,7 @@ public class ProducerDemo {
         Producer<String,String> producer = new KafkaProducer<String, String>(props);
         for (int i=0;i<events;i++){
             //回调处理错误信息
-            producer.send(new ProducerRecord<String, String>("topic_0511_2", String.valueOf(i), String.valueOf(rnd.nextInt()))
+            producer.send(new ProducerRecord<String, String>("streams-file-input", String.valueOf(i), String.valueOf(rnd.nextInt()))
                     , new Callback() {
                 public void onCompletion(RecordMetadata metadata, Exception exception) {
                     System.out.println(exception.getMessage());

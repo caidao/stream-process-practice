@@ -54,7 +54,7 @@ public class KafkaProtocol {
                     BlockingChannel.UseDefaultBufferSize(),
                     5000 /* read timeout in millis */);
             channel.connect();
-            TopicMetadataRequest request = new TopicMetadataRequest(Arrays.asList("topic_0511_2"));
+            TopicMetadataRequest request = new TopicMetadataRequest(Arrays.asList("streams-file-input"));
             channel.send(request);
             TopicMetadataResponse response = TopicMetadataResponse.readFrom(channel.receive().payload());
             System.out.println("TopicMetadataResponse:"+convertSeq(convertSeq(response.topicsMetadata()).get(0).partitionsMetadata()));
@@ -184,12 +184,12 @@ public class KafkaProtocol {
                     BlockingChannel.UseDefaultBufferSize(),
                     5000 /* read timeout in millis */);
             channel.connect();
-            String groupId = "group_paner";
-            final TopicAndPartition testPartition0 = new TopicAndPartition("topic_0511_2", 1);
+            String groupId = "streams-consumer";
+            final TopicAndPartition testPartition0 = new TopicAndPartition("streams-file-input", 1);
             List<TopicAndPartition> partitions = new ArrayList<TopicAndPartition>();
             partitions.add(testPartition0);
-            partitions.add(new TopicAndPartition("topic_0511_2", 0));
-            partitions.add(new TopicAndPartition("topic_0511_2", 2));
+            partitions.add(new TopicAndPartition("streams-file-input", 0));
+            partitions.add(new TopicAndPartition("streams-file-input", 2));
             OffsetFetchRequest request = new OffsetFetchRequest(groupId,convertList(partitions),(short)1,correlationId,MY_CLIENTID);
             channel.send(request);
             OffsetFetchResponse response = kafka.javaapi.OffsetFetchResponse.readFrom(channel.receive().payload());
