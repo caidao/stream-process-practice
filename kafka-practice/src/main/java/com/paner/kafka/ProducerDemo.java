@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by paner on 17/5/8.
@@ -12,7 +13,7 @@ import java.util.Random;
 public class ProducerDemo {
 
     @Test
-    public  void demo() throws InterruptedException {
+    public  void demo() throws InterruptedException, ExecutionException {
         Random rnd = new Random();
         int events = 100;
 
@@ -26,15 +27,24 @@ public class ProducerDemo {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
+        boolean isSync =true;
+        String topic = "topic_0511_2";
         Producer<String,String> producer = new KafkaProducer<String, String>(props);
         for (int i=0;i<events;i++){
-            //回调处理错误信息
-            producer.send(new ProducerRecord<String, String>("streams-file-input", String.valueOf(i), String.valueOf(rnd.nextInt()))
-                    , new Callback() {
-                public void onCompletion(RecordMetadata metadata, Exception exception) {
-                    System.out.println(exception.getMessage());
-                }
-            });
+            RecordMetadata metadata =null;
+            if (isSync){
+               metadata= producer.send(new ProducerRecord<String, String>(topic, String.valueOf(i), String.valueOf(rnd.nextInt()))).get();
+                System.out.println("RecordMetadata async:"+metadata);
+            }else {
+                //回调处理错误信息
+                producer.send(new ProducerRecord<String, String>(topic, String.valueOf(i), String.valueOf(rnd.nextInt()))
+                        , new Callback() {
+                    public void onCompletion(RecordMetadata metadata, Exception exception) {
+                        System.out.println("RecordMetadata sync:"+metadata);
+                    }
+                });
+            }
+
         }
         producer.close();
 

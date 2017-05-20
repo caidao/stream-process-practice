@@ -4,7 +4,10 @@
 + [zookeeper安装配置](http://www.jianshu.com/p/0ba61bf7149f)
 + [kafka安装配置](http://nekomiao.me/2016/11/20/kafka/)
 + jar包的版本要跟kafka版本匹配
+[官方文档](http://kafka.apache.org/0100/documentation/#quickstart)
 + [kafka中文教程](http://www.orchome.com/kafka/index)
++ [apache kafka技术分享系列(目录索引)](http://blog.csdn.net/lizhitao/article/details/39499283)
++ [源码解析](http://zqhxuyuan.github.io/2016/01/06/2016-01-06-Kafka_Producer/)
 
 ##### Q&A
 + Q:producer消息丢失处理？
@@ -33,6 +36,7 @@
 `bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 3 --partitions 3 --topic topic_0511`
 + 查看topic列表
 `bin/kafka-topics.sh --list  --zookeeper localhost:2181`
++ [删除topic](http://blog.csdn.net/fengzheku/article/details/50585972)
 + 查看某个topic的信息
 `bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic topic_0511`
 + 验证消息生产成功
@@ -73,4 +77,7 @@
     + OffsetFetchRequest
     + OffsetFetchResponse
 
+
+#### kafka stream
+[介绍文档](http://blog.csdn.net/opensure/article/details/51507698)
 
