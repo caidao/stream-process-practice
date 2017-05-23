@@ -82,3 +82,4 @@
 [介绍文档](http://blog.csdn.net/opensure/article/details/51507698)
 
 #### kafka connector
+[文档](https://www.confluent.io/product/connectors/)
