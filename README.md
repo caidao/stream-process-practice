@@ -1,6 +1,6 @@
-### 流计算实战学习
+# 流计算实战学习
 
-#### kafka实战
+## kafka实战
 + [zookeeper安装配置](http://www.jianshu.com/p/0ba61bf7149f)
 + [kafka安装配置](http://nekomiao.me/2016/11/20/kafka/)
 + jar包的版本要跟kafka版本匹配
@@ -83,3 +83,7 @@
 
 #### kafka connector
 [文档](https://www.confluent.io/product/connectors/)
+
+
+## storm实战
++ [storm源码之理解Storm中Worker、Executor、Task关系](http://www.cnblogs.com/yufengof/p/storm-worker-executor-task.html)
