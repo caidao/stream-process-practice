@@ -86,4 +86,16 @@
 
 
 ## storm实战
-+ [storm源码之理解Storm中Worker、Executor、Task关系](http://www.cnblogs.com/yufengof/p/storm-worker-executor-task.html)
++ [storm源码之理解Storm中Worker、Executor、Task关系](http://weyo.me/pages/techs/storm-translations-understanding-the-parallelism-of-a-storm-topology/)
++ [storm基础](http://danzhuibing.github.io/Storm_basic.html)
+
+### Q&A
++ Q:并发度问题
++ A:storm集群里的1台物理机器会启动1个或多个worker（JVM）进程，所有的topology将在这些worker进程里被运行，在一个单独的worker进程里会运行1个或多个executor线程。每个executor只会运行1个topology的1个component（spout或bolt）的task实例，1个task最终完成数据处理的实体单元
+`parallelism_hint`,它代表着一个组件的初executor（线程）始数量，所有component的executor数量就是整个topology的整体并行度
++ Q:Nimbus单点问题
++ A:出现单点故障概率低，因为nimbus进程不参与任务运行，本身是无状态的。nimbus通过Zookeeper记录所有supervisor节点的状态和分配给它们的task，如果nimbus发现某个supervisor没有上报心跳或已经不可达，它将会把分配给故障supervisor的task重新分配给其他节点。
++ Q:[消息保证机制](http://www.jianshu.com/p/d521c7c91298)
++ A:利用Spout,Bolt以及Acker的组合可以实现At Most Once以及At Least Once语义，Storm在At Least Once的基础上进行了一次封装（Trident），从而实现Exactly Once语义
++ Q:[分组策略](http://www.cnblogs.com/xymqx/p/4365190.html)
++ A:随机分组、按字段分组、广播..

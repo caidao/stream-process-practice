@@ -34,6 +34,7 @@ public class WordCountTopology {
 
         // submit topology
         Config conf = new Config();
+        conf.put(Config.TOPOLOGY_ACKER_EXECUTORS,0);
         String name = WordCountTopology.class.getSimpleName();
         if (args != null && args.length > 0) {
             String nimbus = args[0];

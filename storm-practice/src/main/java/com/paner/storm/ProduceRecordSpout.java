@@ -47,4 +47,14 @@ public class ProduceRecordSpout extends BaseRichSpout {
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("record"));
     }
+
+    @Override
+    public void fail(Object msgId) {
+        super.fail(msgId);
+    }
+
+    @Override
+    public void ack(Object msgId) {
+        super.ack(msgId);
+    }
 }
