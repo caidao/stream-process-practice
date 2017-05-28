@@ -99,3 +99,5 @@
 + A:利用Spout,Bolt以及Acker的组合可以实现At Most Once以及At Least Once语义，Storm在At Least Once的基础上进行了一次封装（Trident），从而实现Exactly Once语义
 + Q:[分组策略](http://www.cnblogs.com/xymqx/p/4365190.html)
 + A:随机分组、按字段分组、广播..
+
+### storm布署
