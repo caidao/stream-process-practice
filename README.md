@@ -101,3 +101,9 @@
 + A:随机分组、按字段分组、广播..
 
 ### storm布署
++ [快速安装文档](http://www.jianshu.com/p/6e9496d7b51c)
++ [提交任务](http://www.jianshu.com/p/6783f1ec2da0)
+
+
+## zookeeper实战
++ [集群搭建](http://www.jianshu.com/p/abbc1411ed9d)
