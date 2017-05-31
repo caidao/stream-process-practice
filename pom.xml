@@ -11,6 +11,7 @@
     <modules>
         <module>kafka-practice</module>
         <module>storm-practice</module>
+        <module>zookeeper-practice</module>
     </modules>
 
 
@@ -57,6 +58,14 @@
                 <version>0.10.2</version>
                 <!-- keep storm out of the jar-with-dependencies -->
             </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.apache.zookeeper/zookeeper -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>3.4.8</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
