@@ -123,4 +123,20 @@
 + ZooKeeper构造函数
     + [Wathcer机制](https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-zookeeper-watcher/)
    ![Watcher通知状态和事件类型表](https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-zookeeper-watcher/img003.png)
++ ACL控制
+    + 权限
+        + CREATE: 能创建子节点
+        + READ：能获取节点数据和列出其子节点
+        + WRITE: 能设置节点数据
+        + DELETE: 能删除子节点
+        + ADMIN: 能设置权限
+    + scheme
+        + world:它下面只有一个id, 叫anyone,zookeeper中对所有人有权限的结点就是属于world
+        + auth:它不需要id, 只要是通过authentication的user都有权限
+        + digest: 它对应的id为username:BASE64(SHA1(password))，它需要先通过username:password形式的authentication
+        + ip: 它对应的id为客户机的IP地址，设置的时候可以设置一个ip段
+        + super: 在这种scheme情况下，对应的id拥有超级权限，可以做任何事情
+        + sasl: sasl的对应的id，是一个通过sasl authentication用户的id
+    +  [实例参考](http://www.cnblogs.com/yjmyzz/p/zookeeper-acl-demo.html)
+  
    
