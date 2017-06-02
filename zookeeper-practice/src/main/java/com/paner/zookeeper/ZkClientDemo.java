@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -14,32 +15,74 @@ import java.util.concurrent.CountDownLatch;
 
 public class ZkClientDemo {
 
-//    private   CountDownLatch latch;
-//    @Before
-//    public  void before(){
-//        latch = new CountDownLatch(1);
-//    }
 
-
-    @Test
-    public void demo1() throws IOException, KeeperException, InterruptedException {
-       final CountDownLatch latch = new CountDownLatch(1);
-        ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 5000, new Watcher() {
+    public ZooKeeper  createZk() throws IOException, InterruptedException {
+        final  CountDownLatch latch= new CountDownLatch(1);
+        ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 500000, new Watcher() {
             public void process(WatchedEvent watchedEvent) {
-                System.out.println("监听器，监听到的事件时：" + watchedEvent);
+                System.out.println("监听器，监听到的事件是：" + watchedEvent);
                 if (Event.KeeperState.SyncConnected == watchedEvent.getState()){
-                    //如果客户端已经建立连接闭锁减一
-                    System.out.println("建立连接");
+                    if (watchedEvent.getType()== Event.EventType.None){
+                        latch.countDown();
+                    }
+                    if (watchedEvent.getType()== Event.EventType.NodeDataChanged){
+                        System.out.println("节点值被修改");
+                    }else if (watchedEvent.getType()== Event.EventType.NodeDeleted){
+                        System.out.println("节点被删除");
+                    }
                 }
             }
         });
+        latch.await();
+        return zk;
+    }
+
+
+    @Test
+    public void demo1() throws InterruptedException, KeeperException, IOException {
+
+        ZooKeeper zk = createZk();
         //等待连接建立
-        Thread.sleep(1000);
-        String path = "/test";
-        zk.create(path,"init".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);
+        String path = "/test2";
+        if(zk.exists(path, true)==null){
+            zk.create(path,"init".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.PERSISTENT);
+        }
+
 
         Thread.sleep(1000);
-        System.out.println(zk.getData(path, false, new Stat()));
+        Stat stat = new Stat();
+        System.out.println(zk.getData(path, false, stat).toString());
+        zk.exists(path, true);//触发创建时的watcher
+        zk.setData(path, "change".getBytes(), stat.getVersion());
+        Thread.sleep(1000);
+        System.out.println(zk.getData(path, false, stat).toString());
+        //注册新的监听器
+        zk.exists(path, new Watcher() {
+            public void process(WatchedEvent event) {
+                System.out.println("我是新的监听器：节点被删除");
+            }
+        });
+        zk.delete(path,stat.getVersion());
+        zk.close();
+        Thread.sleep(1000);
+    }
+
+    @Test
+    public void childrenDemo() throws KeeperException, InterruptedException, IOException {
+        ZooKeeper zk = createZk();
+        String parentPath = "/parent";
+
+       if(zk.exists(parentPath,true)==null) {
+           zk.create(parentPath, "init".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+       }
+
+        for (int i=0;i<10;i++) {
+            zk.create(parentPath + "/child", String.valueOf(i).getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
+        }
+
+        List<String> children = zk.getChildren(parentPath,true);
+        System.out.println(children);
+        Thread.sleep(10000);
         zk.close();
     }
 }

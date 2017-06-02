@@ -121,8 +121,9 @@
 
 ### zookeeper API
 + ZooKeeper构造函数
-    + [Wathcer机制](https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-zookeeper-watcher/)
+   + [Wathcer机制](https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-zookeeper-watcher/)
    ![Watcher通知状态和事件类型表](https://www.ibm.com/developerworks/cn/opensource/os-cn-apache-zookeeper-watcher/img003.png)
+   + [监听事件总结](https://my.oschina.net/u/1540325/blog/610347)
 + ACL控制
     + 权限
         + CREATE: 能创建子节点
@@ -138,5 +139,7 @@
         + super: 在这种scheme情况下，对应的id拥有超级权限，可以做任何事情
         + sasl: sasl的对应的id，是一个通过sasl authentication用户的id
     +  [实例参考](http://www.cnblogs.com/yjmyzz/p/zookeeper-acl-demo.html)
++ [节点分类](http://www.bug315.com/article/166.htm)
+
   
    
