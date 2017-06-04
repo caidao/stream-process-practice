@@ -1,5 +1,6 @@
 package com.paner.zookeeper.leader_election;
 
+import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 
@@ -14,11 +15,28 @@ public class LeaderWatcher implements Watcher{
         this.leaderLatch = leaderLatch;
     }
 
+    /**
+     * 处理最接近当前节点的delete事件
+     * @param event
+     */
     public void process(WatchedEvent event) {
         System.out.println("event = [" + event + "]");
         if (event.getState() == Event.KeeperState.Disconnected
                 || event.getType()== Event.EventType.NodeDeleted){
-            //父节点断开连接或删除，则子节点重新选举
+            String delNode = event.getPath();
+            try {
+                //如果失效节点为leader，则重新选举
+                if (delNode.equalsIgnoreCase(leaderLatch.findLeader())){
+                    leaderLatch.cacheLeaderPath();
+                }
+                //监控当前节点的邻近最小节点
+                leaderLatch.monitorPriorNode();
+
+            } catch (KeeperException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
