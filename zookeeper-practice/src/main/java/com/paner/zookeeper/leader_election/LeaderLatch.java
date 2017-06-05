@@ -1,6 +1,7 @@
 package com.paner.zookeeper.leader_election;
 
 import org.apache.zookeeper.*;
+import org.apache.zookeeper.data.Stat;
 
 import javax.sound.midi.Soundbank;
 import java.util.Collections;
@@ -40,6 +41,8 @@ public class LeaderLatch {
         //4.获取并缓存leader节点
         latch.await();
         cacheLeaderPath();
+        //5.leader处理
+        leaderProcess();
 
     }
 
@@ -76,13 +79,13 @@ public class LeaderLatch {
 
     //找到leader节点
     public    String findLeader() throws KeeperException, InterruptedException {
-        List<String> children = zk.getChildren(getElectionPath(),false);
+        List<String> children = zk.getChildren(getElectionPath(), false);
         if (children==null || children.isEmpty()){
             System.out.println("node don't exist.");
             return null;
         }
         String leader = getElectionPath()+ "/"+Collections.min(children);
-        System.out.println("leader node is "+leader);
+        System.out.println("leader node is " + leader);
         return leader;
     }
 
@@ -132,6 +135,16 @@ public class LeaderLatch {
         return null;
     }
 
+    public void leaderProcess() throws KeeperException, InterruptedException {
+        //如果当前节点为leader节点，则将该信息写到election上
+        if (currentClientId.equalsIgnoreCase(findLeader())) {
+            Stat stat = new Stat();
+            zk.getData(getElectionPath(), false, stat);
+            String temp = "id:" + Thread.currentThread().getName() + ",path:" + currentClientId;
+            zk.setData(getElectionPath(), temp.getBytes(), stat.getVersion());
+        }
+    }
+
     public String getLeaderPath() {
         return leaderPath;
     }
@@ -145,7 +158,22 @@ public class LeaderLatch {
         }
     }
 
-    public void registerWatch(String path){
-
+    public void monitorElectionNode(Watcher watcher) throws KeeperException, InterruptedException {
+        zk.exists(getElectionPath(),watcher);
     }
+
+    public String getElectionData(Watcher watcher){
+        try {
+            byte[] bytes=   zk.getData(getElectionPath(),watcher,new Stat());
+            if (bytes!=null){
+                return new String(bytes);
+            }
+        } catch (KeeperException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

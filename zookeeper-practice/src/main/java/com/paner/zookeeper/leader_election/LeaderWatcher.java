@@ -26,9 +26,11 @@ public class LeaderWatcher implements Watcher{
             String delNode = event.getPath();
             try {
                 //如果失效节点为leader，则重新选举
-                if (delNode.equalsIgnoreCase(leaderLatch.findLeader())){
-                    leaderLatch.cacheLeaderPath();
+                if (delNode.equalsIgnoreCase(leaderLatch.getLeaderPath())){
+                    leaderLatch.leaderProcess();
                 }
+                //更新leader缓存节点
+                leaderLatch.cacheLeaderPath();
                 //监控当前节点的邻近最小节点
                 leaderLatch.monitorPriorNode();
 

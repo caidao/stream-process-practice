@@ -141,5 +141,8 @@
     +  [实例参考](http://www.cnblogs.com/yjmyzz/p/zookeeper-acl-demo.html)
 + [节点分类](http://www.bug315.com/article/166.htm)
 
+### 实例
++ [选举](http://zookeeper.apache.org/doc/r3.3.1/recipes.html#sc_leaderElection)
++ [案例分析](http://www.besttest.cn/blog/43.html)
   
    
