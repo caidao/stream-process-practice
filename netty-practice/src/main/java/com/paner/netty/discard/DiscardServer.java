@@ -1,5 +1,7 @@
 package com.paner.netty.discard;
 
+import com.paner.netty.time_protocol.TimeEncoder;
+import com.paner.netty.time_protocol.TimeServerHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -41,7 +43,7 @@ public class DiscardServer {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             //很可能要通过添加一些处理程序(例如DiscardServerHandler)来配置新通道的ChannelPipeline来实现您的网络应用程序
-                            socketChannel.pipeline().addLast(new DiscardServerHandler());
+                            socketChannel.pipeline().addLast(new TimeEncoder(),new TimeServerHandler());
                         }
                     })
                     //设置指定Channel实现的参数

@@ -22,10 +22,10 @@ public class TimeServerHandler extends ChannelInboundHandlerAdapter{
     public void channelActive(final ChannelHandlerContext ctx) throws Exception {
         //要发送新消息，需要分配一个包含消息的新缓冲区。
         // 我们要写入一个32位整数，因此需要一个ByteBuf，其容量至少为4个字节
-        final ByteBuf time = ctx.alloc().buffer(4);
-        time.writeInt((int)(System.currentTimeMillis()));
+//        final ByteBuf time = ctx.alloc().buffer(4);
+//        time.writeInt((int)(System.currentTimeMillis()));
 
-        final ChannelFuture f = ctx.writeAndFlush(time);
+        final ChannelFuture f = ctx.writeAndFlush(new UnixTime());
         f.addListener(new ChannelFutureListener() {
             public void operationComplete(ChannelFuture future) {
                 assert f == future;
