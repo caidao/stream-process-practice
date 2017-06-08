@@ -4,6 +4,8 @@ import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class ZkClientDemo {
 
+    private  static  Logger log = LoggerFactory.getLogger(ZkClientDemo.class);
 
     public ZooKeeper  createZk() throws IOException, InterruptedException {
         final  CountDownLatch latch= new CountDownLatch(1);
@@ -35,6 +38,29 @@ public class ZkClientDemo {
         });
         latch.await();
         return zk;
+    }
+
+    @Test
+    //异步创建path
+    public void asyncCreate() throws IOException, InterruptedException {
+        ZooKeeper zk = createZk();
+        final  String path = "/temp";
+        zk.create(path, "test".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, new AsyncCallback.StringCallback() {
+            public void processResult(int rc, String path, Object ctx, String name) {
+                switch (KeeperException.Code.get(rc)){
+                    case CONNECTIONLOSS:
+                        break;
+                    case OK:
+                        System.out.println(path);
+                        break;
+                    default:
+                        System.out.println(name);
+                }
+            }
+        },path);
+        System.out.println("1");
+        Thread.sleep(100000);
+        zk.close();
     }
 
 
