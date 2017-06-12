@@ -47,4 +47,12 @@
 ### 常见问题
 + Q:znode节点大小？
 + A:默认1M大小
-+ Q:
+
+
+### 主-从模式
++ 1、实现主要框架
+    + Master节点
+    + workers节点
+    + tasks节点
+    + assign节点
+    + status节点

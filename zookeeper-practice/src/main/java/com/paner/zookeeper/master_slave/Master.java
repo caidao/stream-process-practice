@@ -134,7 +134,7 @@ public class Master {
         Thread.sleep(1000);
         if (master.isLeader){
             System.out.println("I'm the leader.");
-            Thread.sleep(60000);
+            Thread.sleep(6000000);
         }else {
             System.out.println("Someone else is leader.");
         }

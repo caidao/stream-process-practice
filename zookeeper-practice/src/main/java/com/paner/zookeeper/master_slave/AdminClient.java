@@ -10,6 +10,7 @@ import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by paner on 17/6/11.
@@ -22,12 +23,15 @@ public class AdminClient implements Watcher{
 
     private Logger logger = Logger.getLogger(Client.class);
 
+    private final CountDownLatch latch = new CountDownLatch(1);
+
     public AdminClient(String hostPort){
         this.hostPort = hostPort;
     }
 
-    public void startZk() throws IOException {
+    public void startZk() throws IOException, InterruptedException {
         zk = new ZooKeeper(hostPort,15000,this) ;
+        latch.await();
     }
 
     public void listState() throws KeeperException, InterruptedException {
@@ -53,6 +57,9 @@ public class AdminClient implements Watcher{
 
     public void process(WatchedEvent event) {
         logger.info(event.toString()+","+hostPort);
+        if (Event.KeeperState.SyncConnected == event.getState()){
+            latch.countDown();
+        }
     }
 
 

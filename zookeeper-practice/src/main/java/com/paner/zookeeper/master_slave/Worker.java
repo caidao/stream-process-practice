@@ -7,6 +7,7 @@ import org.apache.zookeeper.data.Stat;
 
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by paner on 17/6/10.
@@ -19,6 +20,7 @@ public class Worker implements Watcher{
     private String hostPort;
     private Logger logger = Logger.getLogger(Watcher.class);
     private String status ;
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     private String getWorkerPath(){
         System.out.println("client id :"+ serverId);
@@ -29,12 +31,16 @@ public class Worker implements Watcher{
         this.hostPort = hostPort;
     }
 
-    public void startZk() throws IOException {
+    public void startZk() throws IOException, InterruptedException {
       zk = new ZooKeeper(hostPort,15000,this) ;
+        latch.await();
     }
 
     public void process(WatchedEvent event) {
         logger.info(event.toString()+","+hostPort);
+        if (Event.KeeperState.SyncConnected == event.getState()){
+            latch.countDown();
+        }
     }
 
     private AsyncCallback.StringCallback createWorkCallback = new AsyncCallback.StringCallback() {
@@ -99,6 +105,6 @@ public class Worker implements Watcher{
         worker.startZk();
         worker.register();
 
-        Thread.sleep(30000);
+        Thread.sleep(30000000);
     }
 }
