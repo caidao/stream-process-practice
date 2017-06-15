@@ -55,6 +55,7 @@ public class Master {
                 case OK:
                     isLeader=true;
                     //take is leader
+                    leaderShip();
                     break;
                 case NODEEXISTS:
                     masterExists();
@@ -165,6 +166,13 @@ public class Master {
         }
     };
 
+    private void leaderShip(){
+        //监控从节点
+        getWorkers();
+        //监控任务节点
+        getTasks();
+    }
+
     //监控workers的状态，并对其分配任务
     private void getWorkers(){
         zk.getChildren("/workers",workersChangeWathcer,workersGetChildrenCallback,null);
@@ -212,6 +220,7 @@ public class Master {
             //重新分配已失效worker节点的任务
             for (String worker:toPorcess){
                 //重新分配absent work task
+                logger.info("woker ("+worker+") haven invalid.");
             }
         }
     }
@@ -248,8 +257,9 @@ public class Master {
                     getTasks();
                     break;
                 case OK:
-                    if (children == null){
+                    if (children != null){
                         //分配任务
+                        assignTasks(children);
                     }
                     break;
                 default:
@@ -303,7 +313,8 @@ public class Master {
                     break;
                 case OK:
                     //删除task任务，防止重复分配
-                    delteTask(name.substring(name.indexOf("/")+1));
+                    logger.info("task assign successfully, path :"+name);
+                    deleteTask(name.substring(name.lastIndexOf("/") + 1));
                     break;
                 case NODEEXISTS:
                     logger.warn("Task already assigned.");
@@ -314,11 +325,11 @@ public class Master {
         }
     };
 
-    private void delteTask(String path){
+    private void deleteTask(String path){
         Stat stat = new Stat();
         try {
-            zk.getData(path,null,stat);
-            zk.delete(path,stat.getVersion());
+            zk.getData("/tasks/"+path,null,stat);
+            zk.delete("/tasks/" + path, stat.getVersion());
         } catch (KeeperException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

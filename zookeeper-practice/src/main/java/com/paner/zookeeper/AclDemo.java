@@ -8,12 +8,14 @@ import org.apache.zookeeper.data.ACL;
 import org.apache.zookeeper.data.Id;
 import org.apache.zookeeper.data.Stat;
 import org.apache.zookeeper.server.auth.DigestAuthenticationProvider;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by paner on 17/6/1.
@@ -60,11 +62,11 @@ public class AclDemo {
         }
 
         List<ACL> acls = new ArrayList<ACL>();
-        acls.add(new ACL(ZooDefs.Perms.ALL,new Id(digest, DigestAuthenticationProvider.generateDigest(allAuth))));
-        acls.add(new ACL(ZooDefs.Perms.READ,new Id(digest, DigestAuthenticationProvider.generateDigest(readAuth))));
-        acls.add(new ACL(ZooDefs.Perms.WRITE,new Id(digest, DigestAuthenticationProvider.generateDigest(writeAuth))));
-        acls.add(new ACL(ZooDefs.Perms.DELETE,new Id(digest, DigestAuthenticationProvider.generateDigest(deleteAuth))));
-        acls.add(new ACL(ZooDefs.Perms.ADMIN,new Id(digest, DigestAuthenticationProvider.generateDigest(adminAuth))));
+        acls.add(new ACL(ZooDefs.Perms.ALL, new Id(digest, DigestAuthenticationProvider.generateDigest(allAuth))));
+        acls.add(new ACL(ZooDefs.Perms.READ, new Id(digest, DigestAuthenticationProvider.generateDigest(readAuth))));
+        acls.add(new ACL(ZooDefs.Perms.WRITE, new Id(digest, DigestAuthenticationProvider.generateDigest(writeAuth))));
+        acls.add(new ACL(ZooDefs.Perms.DELETE, new Id(digest, DigestAuthenticationProvider.generateDigest(deleteAuth))));
+        acls.add(new ACL(ZooDefs.Perms.ADMIN, new Id(digest, DigestAuthenticationProvider.generateDigest(adminAuth))));
 
         zkClient.createPersistent(testNode, "test-data", acls);
         System.out.println(zkClient.readData(testNode));
@@ -154,5 +156,11 @@ public class AclDemo {
             System.err.println(e.getMessage());
         }
         zkClient.close();
+    }
+
+    @Test
+    public void test(){
+        Random random = new Random();
+        System.out.println(random.nextInt(100));
     }
 }
