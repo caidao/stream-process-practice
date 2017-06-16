@@ -136,7 +136,7 @@ public class Client implements Watcher {
         Client client = new Client("localhost:2181");
         client.startZk();
         //String  name = client.queueCommand("test2");
-        client.submitTask("say hello",new TaskObject());
+        client.submitTask("555555",new TaskObject());
        // System.out.println("created = [" +  + "]");
         Thread.sleep(1000000);
     }

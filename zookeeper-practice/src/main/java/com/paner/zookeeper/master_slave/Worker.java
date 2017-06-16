@@ -62,9 +62,11 @@ public class Worker implements Watcher{
                     break;
                 case OK:
                     logger.info("register successfully:" + serverId);
+                    getTasks();
                     break;
                 case NODEEXISTS:
                     logger.warn("already register:"+serverId);
+                    getTasks();
                     break;
                 default:
                     logger.error("something went wrong:", KeeperException.create(KeeperException.Code.get(rc), path));

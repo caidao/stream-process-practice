@@ -63,3 +63,29 @@
     + 如果发生了某些未知，记录错误日志；
     + 通过exists调用在/master节点上设置监视点；
     + 如果/master节点删除，那么再次竞选主节点。
+    
++   主节点等待从节点列表的变化
+    +  观察/workers的子节点变化
+    + 当检测到子节点变化，需要重新分配崩溃从节点的任务，并重新设置新的从节点列表
+
++ 主节点等待新任务进行分配
+    + 在任务列表变化时，监视点获得任务列表
+    + 分配列表中的任务，获得任务信息
+    + 随机选择一个从节点，分配任务给这个从节点
+    + 创建分配节点，路径形式为/assign/worker-id/task-num
+    + 删除/tasks下对应的任务节点
++ 从节点等待分配新任务
+    + 在assign创建/assign/worker-id节点，先注册该节点是为了防止主节点给从节点分配任务
+    + 然后创建一个znode节点来注册从节点/workers/worker-id
+    + 监控/assign/worker-id的子节点，获得变化通知后，获取子节点的列表，
+    + 通过线程池，循环子节点，获得任务信息并执行任务，将正在执行的任务添加到执行列表中，防止多次执行
+
++ 客户端等待任务的执行结果
+    + 创建提交任务节点/tasks/task-id
+    + 针对任务id，监控其/status/task-id的状态
+    + 若监控节点存在，获取执行结果
+
+
++ 执行过程
+    + 启动Master程序，执行runForMaster()创建/master节点，若创建成功，则该客户端为主节点，则执行主节点任务，第一，监控从节点，通过getWorkers()监视/workers下的子节点。第二，分配任务，通过getTasks()监控/tasks下的子节点，若发现有任务提交，则随机将其分配可用的从节点，；若创建失败则作为master的备份客户端，同时通过masterExists()监控/master的状态,一旦/master节点消失，客户端收到通知就运行runForMaster();master创建成功后，初始化创建/workers、/assign、/tasks、/status节点；
+    + 启动第一个Worker程序，首先在可分配任务/assign目录下创建节点/assign/worker-id，再在/workers目录下注册/workers/worker-id节点，成功后需要监控/assign/worker-id子节点，该子节点表示master分配给worker的任务，一旦监控到就需要执行该任务

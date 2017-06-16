@@ -2,6 +2,7 @@ package com.paner.zookeeper;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.apache.zookeeper.server.TraceFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -88,7 +89,7 @@ public class ZkClientDemo {
                 System.out.println("我是新的监听器：节点被删除");
             }
         });
-        zk.delete(path,stat.getVersion());
+        zk.delete(path, stat.getVersion());
         zk.close();
         Thread.sleep(1000);
     }
@@ -110,5 +111,33 @@ public class ZkClientDemo {
         System.out.println(children);
         Thread.sleep(10000);
         zk.close();
+    }
+
+
+    @Test
+    public void deleteParent() throws IOException, InterruptedException, KeeperException {
+        ZooKeeper zk = createZk();
+        String parent = "/assign";
+        List<String> children = zk.getChildren(parent,false);
+        for (String child:children){
+            String childPath = parent+"/"+child;
+            List<String> tasks = zk.getChildren(childPath,false);
+            if (tasks!=null){
+                for (String task:tasks){
+                    zk.delete(childPath+"/"+task,-1);
+                }
+            }
+            zk.delete(childPath,-1);
+        }
+        zk.delete(parent, -1);
+    }
+
+    @Test
+    public void mulitoOP() throws IOException, InterruptedException, KeeperException {
+        Transaction t = createZk().transaction();
+        t.delete("/assign",-1);
+        t.delete("/tasks", -1);
+        List<OpResult> results = t.commit();
+
     }
 }
