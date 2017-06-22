@@ -10,6 +10,8 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
+import org.apache.curator.framework.recipes.leader.LeaderLatch;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
@@ -18,6 +20,9 @@ import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException;
 import org.apache.zookeeper.Watcher;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by paner on 17/6/20.
@@ -120,5 +125,62 @@ public class CuratorDemo {
         }
     };
 
+
+
+    @Test
+    //leader latch选举
+    public void leaderLatch() throws Exception {
+        int client_ids = 10;
+        String leaderPath = "/recepies/master";
+        List<CuratorFramework> clients = new ArrayList<CuratorFramework>();
+        List<LeaderLatch> examples = new ArrayList<LeaderLatch>();
+
+        for (int i=0;i<client_ids;i++){
+            CuratorFramework client = createFramework("127.0.0.1:2181");
+            clients.add(client);
+            LeaderLatch leaderLatch = new LeaderLatch(client,leaderPath,"client#"+i);
+            leaderLatch.addListener(new LeaderLatchListener() {
+                public void isLeader() {
+                    System.out.println("I am leader.");
+                }
+
+                public void notLeader() {
+                    System.out.println("I am not Leader");
+                }
+            });
+            examples.add(leaderLatch);
+            client.start();
+            leaderLatch.start();
+        }
+        Thread.sleep(10000);
+        LeaderLatch currentLeader = null;
+        for (LeaderLatch leaderLatch:examples){
+            if(leaderLatch.hasLeadership()){
+              currentLeader = leaderLatch;
+            }
+        }
+        System.out.println("current leader is " + currentLeader.getId());
+        System.out.println("release the leader " + currentLeader.getId());
+        currentLeader.close();
+
+        //关闭后重新选举
+        Thread.sleep(5000);
+        for (LeaderLatch latch : examples) {
+            if (latch.hasLeadership()) {
+                currentLeader = latch;
+            }
+        }
+        System.out.println("current leader is " + currentLeader.getId());
+        System.out.println("release the leader " + currentLeader.getId());
+
+        //关闭所有client和leader
+        Thread.sleep(5000);
+        for (LeaderLatch latch:examples){
+            latch.close();
+        }
+        for (CuratorFramework client:clients){
+            client.close();
+        }
+    }
 
 }
