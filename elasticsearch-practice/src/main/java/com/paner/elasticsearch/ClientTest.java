@@ -20,6 +20,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -81,13 +83,17 @@ public class ClientTest {
     }
 
     @Test
-    //doc存在则更新，否则删除
+    //doc存在则更新，否则添加
     public void upsertDoc() throws IOException, ExecutionException, InterruptedException {
+        Map<String,Object> map = new HashMap<String, Object>();
+        map.put("快餐",new HashMap<String,Double>(){{put("type", 12121.2);}});
+        map.put("西餐", new HashMap<String,Double>(){{put("type",121.2);}});
         XContentBuilder builder = XContentFactory.jsonBuilder()
                 .startObject()
                 .field("user_id", 1222226)
                 .field("order_city_name", "西极5")
                 .field("order_city_id", 3304L)
+                .field("rest_order_cat0_prefer",map)
                 .endObject();
         IndexRequest indexRequest = new IndexRequest("paner_test", "eco_user_type", "1222226")
                 .source(builder);

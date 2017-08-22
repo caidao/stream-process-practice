@@ -1,16 +1,13 @@
 package com.paner.elasticsearch;
 
-import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.junit.Test;
 import org.nlpcn.es4sql.SearchDao;
 import org.nlpcn.es4sql.exception.SqlParseException;
 import org.nlpcn.es4sql.query.SqlElasticRequestBuilder;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.sql.SQLFeatureNotSupportedException;
 
