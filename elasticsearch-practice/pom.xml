@@ -10,12 +10,29 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>elasticsearch-practice</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-<dependencies>
+    <dependencies>
     <dependency>
         <groupId>org.elasticsearch</groupId>
         <artifactId>elasticsearch</artifactId>
     </dependency>
+
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+        </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.nlpcn/elasticsearch-sql -->
     <dependency>
@@ -27,6 +44,12 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
     </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+
+        </dependency>
 
 
 </dependencies>
