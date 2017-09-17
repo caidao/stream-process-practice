@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.nlpcn.es4sql.SearchDao;
 import org.nlpcn.es4sql.exception.SqlParseException;
 import org.nlpcn.es4sql.query.SqlElasticRequestBuilder;
+import redis.clients.jedis.JedisPubSub;
 
 import java.io.IOException;
 import java.sql.SQLFeatureNotSupportedException;
@@ -21,9 +22,10 @@ public class EsSqlSearchTest {
     @Test
     public void sqlQuery() throws IOException, SQLFeatureNotSupportedException, SqlParseException {
 
-        String sql = "SELECT * FROM bdi_eco_data_index_alias where retail_user_lifecycle ='A10' ";
+        String sql = "SELECT user_id FROM bdi_eco_data_index_alias where retail_user_lifecycle ='A10' ";
 
         Client client = ClientTest.getClient();
+        client.prepareIndex("bdi_eco_data_index_alias","eco_user_type");
         SearchDao searchDao = new SearchDao(client);
         String dsl = searchDao.explain(sql).explain().explain();
         System.out.println("dsl:" + dsl);
@@ -35,7 +37,7 @@ public class EsSqlSearchTest {
         System.out.println("hits:"+hits.totalHits());
 
         ObjectMapper mapper = new ObjectMapper();
-//        for (SearchHit hit:hits.getHits()){
+//        for (SearchHit hit:hits.gtHits()){
 //              writeRedis(hit.getId(),mapper.writeValueAsString(hit.getSource()));
 //        }
 
@@ -49,6 +51,17 @@ public class EsSqlSearchTest {
 
     @Test
     public  void redisTest(){
-        RedisClient.getInstance().getResource().set("paner","test");
+        RedisClient.getInstance().getResource().publish("new.it","test");
+    }
+
+    @Test
+    public void redisSubscribe() throws InterruptedException {
+        RedisClient.getInstance().getResource().subscribe(new JedisPubSub() {
+            @Override
+            public void onMessage(String channel, String message) {
+                System.out.println("channel = [" + channel + "], message = [" + message + "]");
+            }
+        },"new.it");
+        Thread.sleep(10000);
     }
 }

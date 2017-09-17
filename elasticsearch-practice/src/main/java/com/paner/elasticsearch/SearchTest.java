@@ -1,6 +1,6 @@
 package com.paner.elasticsearch;
 
-import org.apache.lucene.queryparser.flexible.core.builders.QueryBuilder;
+
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -18,20 +18,21 @@ public class SearchTest {
 
     @Test
     public void search() throws IOException {
-        SearchResponse response = ClientTest.getClient().prepareSearch("paner_test","bdi_eco_data_index1")
-                .setTypes("eco_user_type","eco_user_type")
+        SearchResponse response = ClientTest.getClient().prepareSearch("bdi_eco_data_index_alias")
+                .setTypes("eco_user_type")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setTimeout(TimeValue.timeValueMillis(10))
                 .setQuery(QueryBuilders.termQuery("order_city_id","1"))
                 .setFrom(0).setSize(60).setExplain(true)
                 .execute()
                 .actionGet();
-        System.out.println("hists:"+response.getHits().totalHits());
+        System.out.println("hists:"+response.getHits().totalHits()+",tookInMillis:"+response.getTookInMillis());
     }
 
     @Test
-    public void scrollsSearch() throws IOException {
+    public void scrollSearch() throws IOException {
 
-        SearchResponse scrollResp = ClientTest.getClient().prepareSearch("paner_test", "bdi_eco_data_index1")
+        SearchResponse scrollResp = ClientTest.getClient().prepareSearch("bdi_eco_data_index1")
                 .setSearchType(SearchType.SCAN)
                 .setScroll(new TimeValue(60000))
                 .setQuery(QueryBuilders.termQuery("order_city_id", "1"))
