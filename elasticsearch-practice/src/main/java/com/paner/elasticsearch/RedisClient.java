@@ -37,7 +37,7 @@ public class RedisClient {
                 config.setTestOnReturn(false);
                 config.setTestWhileIdle(false);
 
-                String hostPortParam = "127.0.0.1:6379";// "10.101.95.234:6379";
+                String hostPortParam = "10.101.95.234:6379";// "10.101.95.234:6379";
                 LOG.info("--> hostPortParam = " + hostPortParam);
                 String[] hostPort = hostPortParam.split(":");
                 String host = hostPort[0];

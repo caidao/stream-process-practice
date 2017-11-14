@@ -37,11 +37,11 @@ public class ClientTest {
 
         Settings settings = Settings.settingsBuilder()
                 .put("client.transport.sniff", true)
-                .put("cluster.name", "elasticsearch")
+                .put("cluster.name", "adca-comm-elasticsearch-2-3-3")
                 .build();
 
         TransportClient client = TransportClient.builder().settings(settings).build();
-        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+        client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("10.101.91.60"), 9300));
         return client;
     }
 

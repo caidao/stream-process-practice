@@ -22,7 +22,7 @@ public class EsSqlSearchTest {
     @Test
     public void sqlQuery() throws IOException, SQLFeatureNotSupportedException, SqlParseException {
 
-        String sql = "SELECT user_id FROM bdi_eco_data_index_alias where retail_user_lifecycle ='A10' ";
+        String sql = "SELECT * FROM bdi_eco_data_index1 where ka_user_lifecycle ='A10' ";
 
         Client client = ClientTest.getClient();
         client.prepareIndex("bdi_eco_data_index_alias","eco_user_type");
@@ -37,9 +37,10 @@ public class EsSqlSearchTest {
         System.out.println("hits:"+hits.totalHits());
 
         ObjectMapper mapper = new ObjectMapper();
-//        for (SearchHit hit:hits.gtHits()){
-//              writeRedis(hit.getId(),mapper.writeValueAsString(hit.getSource()));
-//        }
+        for (SearchHit hit:hits.getHits()){
+            System.out.println(hit.getId());
+            writeRedis("1:"+hit.getId(),mapper.writeValueAsString(hit.getSource()));
+        }
 
     }
 

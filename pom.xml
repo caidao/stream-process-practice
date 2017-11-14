@@ -14,6 +14,7 @@
         <module>zookeeper-practice</module>
         <module>netty-practice</module>
         <module>elasticsearch-practice</module>
+        <module>rocksdbpractice</module>
     </modules>
 
 
