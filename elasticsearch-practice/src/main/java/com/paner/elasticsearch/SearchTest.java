@@ -1,24 +1,63 @@
 package com.paner.elasticsearch;
 
 
+import com.carrotsearch.hppc.cursors.ObjectCursor;
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequestBuilder;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.count.CountResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by paner on 17/8/8.
  */
 public class SearchTest {
 
+
+    @Test
+    public void  getMetaInfo() throws IOException, ExecutionException, InterruptedException {
+
+        IndicesAdminClient indicesAdminClient = ClientTest.getClient().admin().indices();
+        GetMappingsRequestBuilder getMappingsRequestBuilder = indicesAdminClient.
+                prepareGetMappings("bdi_eco_data_index1").setTypes("eco_user_type");
+        GetMappingsResponse response = getMappingsRequestBuilder.get();
+// 结果
+        for(ObjectCursor<String> key : response.getMappings().keys()){
+            ImmutableOpenMap<String, MappingMetaData> mapping = response.getMappings().get(key.value);
+            for(ObjectCursor<String> key2 : mapping.keys()){
+                try {
+                    System.out.println("rt:"+ mapping.get(key2.value).sourceAsMap().toString());
+                    Object objectMap=mapping.get(key2.value).sourceAsMap().get("properties");
+                    if (objectMap instanceof Map){
+                        Map<String,Object> maps = (Map<String, Object>) objectMap;
+                        System.out.println(""+maps.keySet());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+    }
+
     @Test
     public void search() throws IOException {
-        SearchResponse response = ClientTest.getClient().prepareSearch("bdi_eco_data_index_alias")
+        SearchResponse response = ClientTest.getClient().prepareSearch("bdi_eco_data_index1")
                 .setTypes("eco_user_type")
                 .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
                 .setTimeout(TimeValue.timeValueMillis(10))
